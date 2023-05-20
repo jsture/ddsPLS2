@@ -76,6 +76,7 @@ ddsPLS <- function(X,Y,criterion="diffR2Q2",
                         R,n_B,doBoot,n,p,q,n_lambdas,lambda0.)
   res
   }
+  
   get_fused <- function(sigma_k,lambda1,lambda2)
   {
     m2 <- c(flsa(sigma_k,lambda1=0,lambda2 = lambda2))
@@ -199,7 +200,7 @@ ddsPLS <- function(X,Y,criterion="diffR2Q2",
         n_B_i <- ceiling(n_B/NCORES)
         `%my_do%` <- ifelse(NCORES_w!=1,{
           out<-`%dopar%`;cl <- makeCluster(NCORES_w)
-          registerDoParallel(cl);out},{out <- `%do%`;out})
+          registerDoParallel(cl);clusterCall(cl, function(x) .libPaths(x), .libPaths());out},{out <- `%do%`;out})
         res <- foreach(i_B=1:NCORES_w,#.packages = "ddsPLS2",
                        .combine='c',.multicombine=TRUE) %my_do% {
                          bootstrapWrap(U_out,V0,X_init,Y_init,lambdas,lambda_prev,
