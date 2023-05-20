@@ -1,30 +1,3 @@
-#' C++ wrapper for bootstrap function
-#'
-#' The wrapper used to start the bootstrap commands. Not to be used by the user.
-#'
-#' @param U matrix, weights X
-#' @param V matrix, weights Y
-#' @param X matrix
-#' @param Y matrix
-#' @param lambdas vector, the to be tested values for lambda
-#' @param lambda_prev vector, the previous selected values for lambda
-#' @param R integer, the desired number of components
-#' @param n_B integer, the number of bootstrap samples required
-#' @param doBoot boolean, whether or not perform bootstrap. Used to build the
-#' final model (FALSE)
-#' @param n integer, the number of observations
-#' @param p integer, the number of covariates
-#' @param q integer, the number of response variables
-#' @param n_lambdas integer, the number of to be tested lambdas
-#'
-#' @return List
-bootstrapWrap <- function(U,V,X,Y,lambdas,lambda_prev,
-                          R,n_B,doBoot=TRUE,n,p,q,n_lambdas,lambda0.){
-  res <- bootstrap_Rcpp(U,V,X,Y,lambdas,lambda_prev,
-                        R,n_B,doBoot,n,p,q,n_lambdas,lambda0.)
-  res
-}
-
 #' Data-Driven Sparse Partial Least Squares
 #'
 #' The main function of the package. It does both start the ddsPLS algorithm,
@@ -96,6 +69,13 @@ ddsPLS <- function(X,Y,criterion="diffR2Q2",
                    lambdas=NULL,n_B=50,n_lambdas=100,lambda_roof=NULL,
                    gamma=NULL,
                    lowQ2=0.0,NCORES=1,errorMin=1e-9,verbose=FALSE){
+                   
+  bootstrapWrap <- function(U,V,X,Y,lambdas,lambda_prev,
+                          R,n_B,doBoot=TRUE,n,p,q,n_lambdas,lambda0.){
+  res <- bootstrap_Rcpp(U,V,X,Y,lambdas,lambda_prev,
+                        R,n_B,doBoot,n,p,q,n_lambdas,lambda0.)
+  res
+  }
   get_fused <- function(sigma_k,lambda1,lambda2)
   {
     m2 <- c(flsa(sigma_k,lambda1=0,lambda2 = lambda2))
